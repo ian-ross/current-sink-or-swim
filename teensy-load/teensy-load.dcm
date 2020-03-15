@@ -1,0 +1,25 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP ADP3338-2.5
+D 1A Low Dropout regulator, positive, 1.5V fixed output, TO-252
+K linear regulator ldo fixed positive
+F http://www.advanced-monolithic.com/pdf/ds1117.pdf
+$ENDCMP
+#
+$CMP BTS141
+D 25A Id, 60V Vds, Smart Low Side Power Switch HITFET (equiv. N-Channel Enhancement Mode MOSFET), TO-220
+K Low Side Power Switch HITFET
+F https://www.infineon.com/dgdl/Infineon-BTS141-DS-v01_00-EN.pdf
+$ENDCMP
+#
+$CMP V+
+D Power symbol creates a global label with name "+1V0"
+K power-flag
+$ENDCMP
+#
+$CMP VBAT
+D Power symbol creates a global label with name "+1V0"
+K power-flag
+$ENDCMP
+#
+#End Doc Library
