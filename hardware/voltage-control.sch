@@ -20,15 +20,15 @@ V_SENSE
 $Comp
 L power:GND #PWR?
 U 1 1 5E6085EF
-P 5200 4125
+P 5200 4400
 AR Path="/5E6085EF" Ref="#PWR?"  Part="1" 
 AR Path="/5E5EBC79/5E6085EF" Ref="#PWR?"  Part="1" 
 AR Path="/5E5EBE75/5E6085EF" Ref="#PWR0304"  Part="1" 
-F 0 "#PWR0304" H 5200 3875 50  0001 C CNN
-F 1 "GND" H 5205 3952 50  0000 C CNN
-F 2 "" H 5200 4125 50  0001 C CNN
-F 3 "" H 5200 4125 50  0001 C CNN
-	1    5200 4125
+F 0 "#PWR0304" H 5200 4150 50  0001 C CNN
+F 1 "GND" H 5205 4227 50  0000 C CNN
+F 2 "" H 5200 4400 50  0001 C CNN
+F 3 "" H 5200 4400 50  0001 C CNN
+	1    5200 4400
 	1    0    0    -1  
 $EndComp
 Text HLabel 3325 2600 0    50   Input ~ 0
@@ -79,21 +79,12 @@ Wire Wire Line
 	5200 3000 5200 2750
 Wire Wire Line
 	5200 2750 4725 2750
-Wire Wire Line
-	5200 3900 5200 4025
 Text Notes 4925 2725 0    50   ~ 0
 0-3.3V
 Text Notes 5425 3450 0    50   ~ 0
 0-2V
-Wire Wire Line
-	4275 4025 5200 4025
-Connection ~ 5200 4025
-Wire Wire Line
-	5200 4025 5200 4125
 Text Notes 3050 3100 0    50   ~ 0
 Other DAC6571\nhas A0 low
-Wire Wire Line
-	4275 3150 4275 4025
 Wire Wire Line
 	3650 2900 3650 2275
 Wire Wire Line
@@ -106,9 +97,10 @@ L Device:R R301
 U 1 1 5E608A62
 P 5200 3150
 F 0 "R301" H 5270 3196 50  0000 L CNN
-F 1 "10K" H 5270 3105 50  0000 L CNN
+F 1 "39K" H 5270 3105 50  0000 L CNN
 F 2 "Resistor_SMD:R_0805_2012Metric_Pad1.15x1.40mm_HandSolder" V 5130 3150 50  0001 C CNN
-F 3 "~" H 5200 3150 50  0001 C CNN
+F 3 "https://www.mouser.at/datasheet/2/427/crcwce3-1762584.pdf" H 5200 3150 50  0001 C CNN
+F 4 "CRCW040239K0FKEDC" H 5200 3150 50  0001 C CNN "MPN"
 	1    5200 3150
 	1    0    0    -1  
 $EndComp
@@ -117,15 +109,16 @@ L Device:R R302
 U 1 1 5E608F1F
 P 5200 3750
 F 0 "R302" H 5270 3796 50  0000 L CNN
-F 1 "15K" H 5270 3705 50  0000 L CNN
+F 1 "27K" H 5270 3705 50  0000 L CNN
 F 2 "Resistor_SMD:R_0805_2012Metric_Pad1.15x1.40mm_HandSolder" V 5130 3750 50  0001 C CNN
-F 3 "~" H 5200 3750 50  0001 C CNN
+F 3 "https://www.mouser.at/datasheet/2/427/crcwce3-1762584.pdf" H 5200 3750 50  0001 C CNN
+F 4 "CRCW120627K0FKEAC" H 5200 3750 50  0001 C CNN "MPN"
 	1    5200 3750
 	1    0    0    -1  
 $EndComp
-Text HLabel 8700 5775 2    50   Input ~ 0
+Text HLabel 8700 6175 2    50   Input ~ 0
 IN-
-Text HLabel 8700 4475 2    50   Input ~ 0
+Text HLabel 8700 5175 2    50   Input ~ 0
 IN+
 $Comp
 L pspice:DIODE D301
@@ -142,50 +135,43 @@ $EndComp
 Wire Wire Line
 	7375 3575 7175 3575
 $Comp
-L Device:R R303
+L Device:R R307
 U 1 1 5E60E589
-P 8125 4800
-F 0 "R303" H 8195 4846 50  0000 L CNN
-F 1 "9K" H 8195 4755 50  0000 L CNN
-F 2 "Resistor_SMD:R_0805_2012Metric_Pad1.15x1.40mm_HandSolder" V 8055 4800 50  0001 C CNN
-F 3 "~" H 8125 4800 50  0001 C CNN
-	1    8125 4800
+P 8125 5425
+F 0 "R307" H 8195 5471 50  0000 L CNN
+F 1 "18K" H 8195 5380 50  0000 L CNN
+F 2 "Resistor_SMD:R_0805_2012Metric_Pad1.15x1.40mm_HandSolder" V 8055 5425 50  0001 C CNN
+F 3 "https://www.mouser.at/datasheet/2/418/NG_DS_9-1773463-9_A-1358566.pdf" H 8125 5425 50  0001 C CNN
+F 4 "CRGP0805F18K" H 8125 5425 50  0001 C CNN "MPN"
+	1    8125 5425
 	1    0    0    -1  
 $EndComp
 $Comp
-L Device:R R304
+L Device:R R308
 U 1 1 5E60E864
-P 8125 5475
-F 0 "R304" H 8195 5521 50  0000 L CNN
-F 1 "1K" H 8195 5430 50  0000 L CNN
-F 2 "Resistor_SMD:R_0805_2012Metric_Pad1.15x1.40mm_HandSolder" V 8055 5475 50  0001 C CNN
-F 3 "~" H 8125 5475 50  0001 C CNN
-	1    8125 5475
+P 8125 5925
+F 0 "R308" H 8195 5971 50  0000 L CNN
+F 1 "2K" H 8195 5880 50  0000 L CNN
+F 2 "Resistor_SMD:R_0805_2012Metric_Pad1.15x1.40mm_HandSolder" V 8055 5925 50  0001 C CNN
+F 3 "https://www.mouser.at/datasheet/2/427/crcwce3-1762584.pdf" H 8125 5925 50  0001 C CNN
+F 4 "CRCW08052K00FKEAC" H 8125 5925 50  0001 C CNN "MPN"
+	1    8125 5925
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	8125 5775 8125 5625
-Wire Wire Line
-	8125 5325 8125 5125
-Wire Wire Line
-	8125 5125 6175 5125
+	8125 5675 6175 5675
 Wire Wire Line
 	6175 3675 6575 3675
-Connection ~ 8125 5125
-Text Notes 8200 4450 0    50   ~ 0
+Text Notes 8200 5150 0    50   ~ 0
 0-20V
-Text Notes 7200 5100 0    50   ~ 0
+Text Notes 7200 5650 0    50   ~ 0
 0-2V
 Wire Wire Line
 	8700 3575 7775 3575
 Wire Wire Line
-	8125 5775 8700 5775
+	8125 6175 8700 6175
 Wire Wire Line
-	8125 4475 8700 4475
-Wire Wire Line
-	8125 4475 8125 4650
-Wire Wire Line
-	8125 4950 8125 5125
+	8125 5175 8700 5175
 Wire Wire Line
 	5200 3475 6575 3475
 $Comp
@@ -197,7 +183,8 @@ AR Path="/5E5EBE75/5E61BA38" Ref="C301"  Part="1"
 F 0 "C301" H 2390 2771 50  0000 L CNN
 F 1 "0.1U" H 2390 2680 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0805_2012Metric_Pad1.15x1.40mm_HandSolder" H 2313 2575 50  0001 C CNN
-F 3 "~" H 2275 2725 50  0001 C CNN
+F 3 "https://www.mouser.at/datasheet/2/445/885012207098-1727748.pdf" H 2275 2725 50  0001 C CNN
+F 4 "885012207098" H 2275 2725 50  0001 C CNN "MPN"
 	1    2275 2725
 	1    0    0    -1  
 $EndComp
@@ -264,18 +251,111 @@ Wire Wire Line
 	8700 4025 8375 4025
 Wire Wire Line
 	7675 3925 6175 3925
-Connection ~ 6175 3925
-Wire Wire Line
-	6175 3925 6175 5125
-Wire Wire Line
-	8375 4025 8375 4325
-Wire Wire Line
-	8375 4325 7550 4325
-Wire Wire Line
-	7550 4325 7550 4125
 Wire Wire Line
 	7550 4125 7675 4125
 Connection ~ 8375 4025
 Wire Wire Line
 	8375 4025 8275 4025
+Wire Wire Line
+	8125 5575 8125 5675
+Connection ~ 8125 5675
+Wire Wire Line
+	8125 5675 8125 5775
+Wire Wire Line
+	8125 6175 8125 6075
+Wire Wire Line
+	8125 5275 8125 5175
+Wire Wire Line
+	6175 3925 6175 5675
+Connection ~ 6175 3925
+$Comp
+L Device:R R306
+U 1 1 5E7D0474
+P 7950 4475
+F 0 "R306" V 8157 4475 50  0000 C CNN
+F 1 "39K" V 8066 4475 50  0000 C CNN
+F 2 "Resistor_SMD:R_0805_2012Metric_Pad1.15x1.40mm_HandSolder" V 7880 4475 50  0001 C CNN
+F 3 "https://www.mouser.at/datasheet/2/427/crcwce3-1762584.pdf" H 7950 4475 50  0001 C CNN
+F 4 "CRCW040239K0FKEDC" H 7950 4475 50  0001 C CNN "MPN"
+	1    7950 4475
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	8375 4475 8100 4475
+Wire Wire Line
+	8375 4025 8375 4475
+Wire Wire Line
+	7800 4475 7550 4475
+Wire Wire Line
+	7550 4125 7550 4475
+$Comp
+L Device:R R304
+U 1 1 5E7D2755
+P 7550 4725
+F 0 "R304" H 7620 4771 50  0000 L CNN
+F 1 "27K" H 7620 4680 50  0000 L CNN
+F 2 "Resistor_SMD:R_0805_2012Metric_Pad1.15x1.40mm_HandSolder" V 7480 4725 50  0001 C CNN
+F 3 "https://www.mouser.at/datasheet/2/427/crcwce3-1762584.pdf" H 7550 4725 50  0001 C CNN
+F 4 "CRCW120627K0FKEAC" H 7550 4725 50  0001 C CNN "MPN"
+	1    7550 4725
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7550 4575 7550 4475
+Connection ~ 7550 4475
+$Comp
+L power:GND #PWR?
+U 1 1 5E7D3274
+P 7550 5325
+AR Path="/5E7D3274" Ref="#PWR?"  Part="1" 
+AR Path="/5E5EBC79/5E7D3274" Ref="#PWR?"  Part="1" 
+AR Path="/5E5EBE75/5E7D3274" Ref="#PWR0305"  Part="1" 
+F 0 "#PWR0305" H 7550 5075 50  0001 C CNN
+F 1 "GND" H 7555 5152 50  0000 C CNN
+F 2 "" H 7550 5325 50  0001 C CNN
+F 3 "" H 7550 5325 50  0001 C CNN
+	1    7550 5325
+	1    0    0    -1  
+$EndComp
+Text Notes 7925 4825 0    50   ~ 0
+Amplification of 1.65 here gives full range\nADC input for sense voltage range of 0-2V.
+$Comp
+L Device:R R303
+U 1 1 5E7FA900
+P 5200 4100
+F 0 "R303" H 5270 4146 50  0000 L CNN
+F 1 "33K" H 5270 4055 50  0000 L CNN
+F 2 "Resistor_SMD:R_0805_2012Metric_Pad1.15x1.40mm_HandSolder" V 5130 4100 50  0001 C CNN
+F 3 "https://www.mouser.at/datasheet/2/418/NG_DS_9-1773463-9_A-1358566.pdf" H 5200 4100 50  0001 C CNN
+F 4 "CRGP0805F33K" H 5200 4100 50  0001 C CNN "MPN"
+	1    5200 4100
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5200 3950 5200 3900
+Wire Wire Line
+	5200 4250 5200 4325
+Wire Wire Line
+	4275 4325 5200 4325
+Wire Wire Line
+	4275 3150 4275 4325
+Connection ~ 5200 4325
+Wire Wire Line
+	5200 4325 5200 4400
+$Comp
+L Device:R R305
+U 1 1 5E7FE2C5
+P 7550 5100
+F 0 "R305" H 7620 5146 50  0000 L CNN
+F 1 "33K" H 7620 5055 50  0000 L CNN
+F 2 "Resistor_SMD:R_0805_2012Metric_Pad1.15x1.40mm_HandSolder" V 7480 5100 50  0001 C CNN
+F 3 "https://www.mouser.at/datasheet/2/418/NG_DS_9-1773463-9_A-1358566.pdf" H 7550 5100 50  0001 C CNN
+F 4 "CRGP0805F33K" H 7550 5100 50  0001 C CNN "MPN"
+	1    7550 5100
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7550 4875 7550 4950
+Wire Wire Line
+	7550 5250 7550 5325
 $EndSCHEMATC
