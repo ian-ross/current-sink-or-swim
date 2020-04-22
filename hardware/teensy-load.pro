@@ -1,4 +1,4 @@
-update=Wed 22 Apr 2020 07:10:48 PM CEST
+update=Wed 22 Apr 2020 09:37:52 PM CEST
 version=1
 last_client=kicad
 [general]
@@ -38,7 +38,10 @@ MinViaDrill=0.3302
 MinMicroViaDiameter=0
 MinMicroViaDrill=0
 MinHoleToHole=0.254
-TrackWidth1=0.1524
+TrackWidth1=0.254
+TrackWidth2=0.254
+TrackWidth3=1.905
+TrackWidth4=3.81
 ViaDiameter1=0.6858
 ViaDrill1=0.3302
 dPairWidth1=0.1524
@@ -238,7 +241,18 @@ Enabled=0
 [pcbnew/Netclasses/Default]
 Name=Default
 Clearance=0.1524
-TrackWidth=0.1524
+TrackWidth=0.254
+ViaDiameter=0.6858
+ViaDrill=0.3302
+uViaDiameter=0.0254
+uViaDrill=0
+dPairWidth=0.1524
+dPairGap=0.1524
+dPairViaGap=0.25
+[pcbnew/Netclasses/1]
+Name=High Current
+Clearance=0.381
+TrackWidth=1.905
 ViaDiameter=0.6858
 ViaDrill=0.3302
 uViaDiameter=0.0254
