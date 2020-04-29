@@ -1,0 +1,54 @@
+#!/usr/bin/env python3
+import math
+import gi
+
+gi.require_version("Gtk", "3.0")
+from gi.repository import Gtk, GObject
+
+POWER_LIMIT = 20.0
+
+class Handler:
+    def __init__(self, builder):
+        self.builder = builder
+        self.current_set = builder.get_object("current-set")
+        self.voltage_set = builder.get_object("voltage-set")
+        self.power_limit = builder.get_object("power-limit")
+
+    def onDestroy(self, *args):
+        Gtk.main_quit()
+
+    def onOpenPreferences(self, button):
+        print("Open preferences...")
+
+    def onCurrentChanged(self, button):
+        self.setPowerLimit()
+
+    def onVoltageChanged(self, button):
+        self.setPowerLimit()
+
+    def setPowerLimit(self):
+        current = self.current_set.get_value()
+        voltage = self.voltage_set.get_value()
+        power = current * voltage
+        if power <= POWER_LIMIT:
+            return
+        self.power_limit.show()
+        GObject.timeout_add(2000, self.hidePowerLimit)
+        voltage_limit = math.floor(POWER_LIMIT / current * 100) / 100
+        self.voltage_set.set_value(voltage_limit)
+
+    def hidePowerLimit(self):
+        self.power_limit.hide()
+        return False
+
+builder = Gtk.Builder()
+builder.add_from_file("tl-meter.glade")
+builder.connect_signals(Handler(builder))
+
+win = builder.get_object("top-level")
+win.show_all()
+
+power_limit = builder.get_object("power-limit")
+power_limit.hide()
+
+Gtk.main()
