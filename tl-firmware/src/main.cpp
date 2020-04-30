@@ -1,6 +1,7 @@
 // Teensy Load firmware V0.1
 
-#include <Wire.h>
+#include <Arduino.h>
+#include "shared.h"
 
 
 // ----------------------------------------------------------------------
@@ -85,31 +86,14 @@
 
 // ----------------------------------------------------------------------
 //
-//  PIN AND ADDRESS ASSIGNMENTS
-//
-
-// Standard analogue input pins (need to be in 12-bit mode).
-#define CURRENT_ADC_PIN 0
-#define VOLTAGE_ADC_PIN 1
-
-// The DACs are I2C devices with addresses of the form:
-//
-//    1 0 0  1 1 0 A0
-
-// Current setting DAC has A0 low.
-#define CURRENT_DAC_ADDR 0x4C
-
-// Current setting DAC has A0 high.
-#define VOLTAGE_DAC_ADDR 0x4D
-
-
-// ----------------------------------------------------------------------
-//
 //  STATE
 //
 
 // Are we currently sampling and writing samples to the serial port?
 bool sampling = false;
+
+// Sample interval (ms).
+int sample_ms = 0;
 
 // Are there new settings to apply, passed to us via the serial port?
 bool new_settings = false;
@@ -122,7 +106,7 @@ int voltage_setting = 0;
 
 // Next sample time (set when valid current and voltage settings are
 // first received from the serial port).
-int next_sample_millis = 0;
+unsigned int next_sample_millis = 0;
 
 
 // ----------------------------------------------------------------------
@@ -135,11 +119,8 @@ void setup()
   // Serial communications with host PC.
   Serial.begin(115200);
 
-  // Scaling factors calculated above all rely on 12-bit ADC range.
-  analogReadResolution(12);
-
-  // Initialise I2C library for talking to DACs.
-  Wire.begin();
+  // Perform simulator/hardware-specific setup.
+  io_setup();
 }
 
 
@@ -190,21 +171,43 @@ void loop()
 
 void serialEvent()
 {
-  // Read full LF-terminated line.
+  // Read full LF-terminated line, handling blank lines as "hello" lines.
   String line = Serial.readStringUntil('\n');
-
+  line = line.trim();
+  if (line.length() == 0) {
+    Serial.println("+version 0.1");
+    return;
+  }
+  
   // Parse as 3 integers separated by spaces.
-  line = trim(line);
-  int values[] = int(split(line, ' '));
-  if (values.length != 3) {
+  int space1 = line.indexOf(" ");
+  if (space1 < 0) {
     Serial.println("+error invalid-message");
     return;
   }
+  String new_sample_ms_s = line.substring(0, space1);
+  int new_sample_ms = new_sample_ms_s.toInt();
+  if (new_sample_ms == 0 && new_sample_ms_s != "0") {
+    Serial.println("+error invalid-sample-ms");
+  }
+  line = line.substring(space1 + 1);
+  int space2 = line.indexOf(" ");
+  if (space2 < 0) {
+    Serial.println("+error invalid-message");
+    return;
+  }
+  String new_current_setting_s = line.substring(0, space2);
+  int new_current_setting = new_current_setting_s.toInt();
+  if (new_current_setting == 0 && new_current_setting_s != "0") {
+    Serial.println("+error invalid-current-setting");
+  }
+  String new_voltage_setting_s = line.substring(space2 + 1);
+  int new_voltage_setting = new_voltage_setting_s.toInt();
+  if (new_voltage_setting == 0 && new_voltage_setting_s != "0") {
+    Serial.println("+error invalid-voltage-setting");
+  }
 
   // Check values are OK and send error message if not.
-  int new_sample_ms = values[0];
-  int new_current_setting = values[1];
-  int new_voltage_setting = values[2];
   if (new_sample_ms < 0 || new_sample_ms > 100000) {
     Serial.println("+error invalid-sample-ms");
     return;
@@ -234,74 +237,11 @@ void serialEvent()
   current_setting = new_current_setting;
   voltage_setting = new_voltage_setting;
   if (sample_ms == 0) {
-    sample = false;
+    sampling = false;
     current_setting = 0;
     voltage_setting = 0;
   }
 
   // Trigger settings processing in next loop.
   new_settings = true;
-}
-
-
-// ----------------------------------------------------------------------
-//
-//  UTILITIES
-//
-
-// Read current value.
-
-int read_current(void)
-{
-  return analogRead(CURRENT_ADC_PIN);
-}
-
-
-// Read voltage value.
-
-int read_voltage(void)
-{
-  return analogRead(VOLTAGE_ADC_PIN);
-}
-
-
-// Set voltage limit.
-
-void set_voltage_limit(int limit)
-{
-  dac_write(VOLTAGE_DAC_ADDR, limit);
-}
-
-
-// Set current value.
-
-void set_current_value(int value)
-{
-  dac_write(CURRENT_DAC_ADDR, value);
-}
-
-
-// Write value to DAC over I2C.
-//
-// Given a 10-bit data value (D0:LSB - D9:MSB), the DAC value is set
-// by sending a two byte I2C message with bytes:
-//
-//   MSB: 0    0 PD1 PD0  D9  D8  D7  D6
-//
-//   LSB: D5  D4  D3  D2  D1  D0   X   X
-//
-// (PD1 and PD0 are power-down flags, both of which we set to zero)
-//
-// These can be generated from the 10-bit data value as:
-//
-//   9 8  7 6 5 4  3 2 1 0
-//   X X  X X               => 0x3C0 mask, right shift 6
-//            X X  X X X X  => 0x03F mask, left shift 2
-
-void dac_write(int addr, int val)
-{
-  Wire.beginTransmission(addr);
-  Wire.write((val & 0x3C0) >> 6);
-  Wire.write((val & 0x03F) << 2);
-  Wire.endTransmission();
 }
