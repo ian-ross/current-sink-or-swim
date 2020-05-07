@@ -1,5 +1,5 @@
-#include <Arduino.h>
 #include <Wire.h>
+#include "common.h"
 
 
 // ----------------------------------------------------------------------
@@ -27,18 +27,19 @@ static void dac_write(int addr, int val);
 
 // ----------------------------------------------------------------------
 //
-//  HARDWARE-SPECIFIC SETUP
+//  SETUP
 //
 
-void io_setup(void)
+void setup()
 {
+  common_setup();
+
  // Scaling factors calculated above all rely on 12-bit ADC range.
   analogReadResolution(12);
 
-   // Initialise I2C library for talking to DACs.
+  // Initialise I2C library for talking to DACs.
   Wire.begin();
 }
-
 
 // ----------------------------------------------------------------------
 //
