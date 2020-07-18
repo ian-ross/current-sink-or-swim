@@ -25,6 +25,7 @@ class Handler:
         self.power_limit = builder.get_object("power-limit")
         self.status_bar = builder.get_object("status-bar")
         self.stop = builder.get_object("stop")
+        self.comment_text = builder.get_object("comment")
         self.sample_ms = 100
         self.filename = os.path.expanduser(
             datetime.now().strftime('~/tl-meter/%Y%m%d-%H%M%S.dat'))
@@ -66,6 +67,12 @@ class Handler:
 
     def onOpenPreferences(self, button):
         print("Open preferences...")
+
+    def addComment(self, button):
+        comment = self.comment_text.get_text()
+        t = datetime.now().timestamp() - self.t0
+        print('# {}: {}'.format(t, comment), file=self.logfp)
+        self.comment_text.set_text('')
 
     def onCurrentChanged(self, button):
         if self.setPowerLimit():
