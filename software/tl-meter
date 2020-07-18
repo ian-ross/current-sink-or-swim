@@ -1,41 +1,84 @@
 #!/usr/bin/env python3
 import math
 import gi
+import sys
+from threading import Thread
+
+import comms
 
 gi.require_version("Gtk", "3.0")
-from gi.repository import Gtk, GObject
+from gi.repository import Gtk, GObject, GLib
 
 POWER_LIMIT = 20.0
 
 class Handler:
     def __init__(self, builder):
         self.builder = builder
+        self.current = builder.get_object("current")
+        self.voltage = builder.get_object("voltage")
         self.current_set = builder.get_object("current-set")
         self.voltage_set = builder.get_object("voltage-set")
         self.power_limit = builder.get_object("power-limit")
+        self.status_bar = builder.get_object("status-bar")
+        self.stop = builder.get_object("stop")
+        self.sample_ms = 100
+
+        try:
+            self.teensy_load = comms.TeensyLoad()
+        except Exception as exc:
+            print('Oops:', exc, file=sys.stderr)
+            sys.exit(1)
+        self.data_queue = self.teensy_load.data_queue()
+        self.usb_handler = Thread(target=self.handle_usb)
+        self.usb_handler.setDaemon(True)
+        self.usb_handler.start()
+
+    def handle_usb(self):
+        while True:
+            vals = self.data_queue.get()
+            GLib.idle_add(self.set_values, vals,
+                          priority=GLib.PRIORITY_DEFAULT)
+
+    def set_values(self, vals):
+        current, voltage = vals
+        self.current.set_text('{:6.3f} A'.format(current))
+        self.voltage.set_text('{:6.3f} V'.format(voltage))
 
     def onDestroy(self, *args):
         Gtk.main_quit()
+
+    def onStopPressed(self, button):
+        self.teensy_load.stop()
+        self.current.set_text('00.000 A')
+        self.voltage.set_text('00.000 V')
 
     def onOpenPreferences(self, button):
         print("Open preferences...")
 
     def onCurrentChanged(self, button):
-        self.setPowerLimit()
+        if self.setPowerLimit():
+            self.setValues()
 
     def onVoltageChanged(self, button):
-        self.setPowerLimit()
+        if self.setPowerLimit():
+            self.setValues()
+
+    def setValues(self):
+        current = self.current_set.get_value()
+        voltage = self.voltage_set.get_value()
+        self.teensy_load.start(self.sample_ms, current, voltage)
 
     def setPowerLimit(self):
         current = self.current_set.get_value()
         voltage = self.voltage_set.get_value()
         power = current * voltage
         if power <= POWER_LIMIT:
-            return
+            return True
         self.power_limit.show()
         GObject.timeout_add(2000, self.hidePowerLimit)
         voltage_limit = math.floor(POWER_LIMIT / current * 100) / 100
         self.voltage_set.set_value(voltage_limit)
+        return False
 
     def hidePowerLimit(self):
         self.power_limit.hide()
