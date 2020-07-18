@@ -172,14 +172,14 @@ Wire Wire Line
 Wire Wire Line
 	7025 5275 8650 5275
 Wire Wire Line
-	7025 3650 7025 3825
+	7025 3650 7025 3750
 Wire Wire Line
 	5625 3550 5500 3550
 Wire Wire Line
-	5500 3550 5500 3825
+	5500 3550 5500 3750
 Wire Wire Line
-	5500 3825 7025 3825
-Connection ~ 7025 3825
+	5500 3750 7025 3750
+Connection ~ 7025 3750
 Text Notes 4825 2600 0    50   ~ 0
 0-3.3V
 Text Notes 5200 3325 0    50   ~ 0
@@ -235,7 +235,7 @@ Wire Wire Line
 Wire Wire Line
 	2050 2350 2050 2125
 Wire Wire Line
-	7025 3825 7025 3900
+	7025 3750 7025 3825
 Connection ~ 7025 3900
 Wire Wire Line
 	7025 3900 7025 3950
@@ -431,4 +431,108 @@ Wire Wire Line
 	7600 4400 7925 4400
 Wire Wire Line
 	8225 4400 8375 4400
+$Comp
+L power:GND #PWR?
+U 1 1 5F10D516
+P 5750 5025
+AR Path="/5F10D516" Ref="#PWR?"  Part="1" 
+AR Path="/5E5EBC79/5F10D516" Ref="#PWR02"  Part="1" 
+F 0 "#PWR02" H 5750 4775 50  0001 C CNN
+F 1 "GND" H 5755 4852 50  0000 C CNN
+F 2 "" H 5750 5025 50  0001 C CNN
+F 3 "" H 5750 5025 50  0001 C CNN
+	1    5750 5025
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+3.3V #PWR01
+U 1 1 5F10DB53
+P 5750 4100
+F 0 "#PWR01" H 5750 3950 50  0001 C CNN
+F 1 "+3.3V" H 5765 4273 50  0000 C CNN
+F 2 "" H 5750 4100 50  0001 C CNN
+F 3 "" H 5750 4100 50  0001 C CNN
+	1    5750 4100
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5750 4100 5750 4200
+Wire Wire Line
+	5750 4500 5750 4550
+Wire Wire Line
+	5750 4925 5750 5025
+Wire Wire Line
+	6025 4550 5750 4550
+Connection ~ 5750 4550
+Wire Wire Line
+	5750 4550 5750 4625
+Wire Wire Line
+	6325 4550 6525 4550
+Wire Wire Line
+	6525 4550 6525 3825
+Wire Wire Line
+	6525 3825 7025 3825
+Connection ~ 7025 3825
+Wire Wire Line
+	7025 3825 7025 3900
+$Comp
+L Device:R R?
+U 1 1 5F10C69E
+P 5750 4350
+AR Path="/5F10C69E" Ref="R?"  Part="1" 
+AR Path="/5E5EBC79/5F10C69E" Ref="R209"  Part="1" 
+F 0 "R209" H 5925 4375 50  0000 C CNN
+F 1 "100K" H 5925 4300 50  0000 C CNN
+F 2 "Resistor_SMD:R_0805_2012Metric_Pad1.15x1.40mm_HandSolder" V 5680 4350 50  0001 C CNN
+F 3 "https://www.mouser.at/datasheet/2/418/NG_DS_9-1773463-9_A-1358566.pdf" H 5750 4350 50  0001 C CNN
+F 4 "CRGP0805F1K0" H 5750 4350 50  0001 C CNN "MPN"
+	1    5750 4350
+	-1   0    0    1   
+$EndComp
+$Comp
+L Device:R R?
+U 1 1 5F10CB4F
+P 5750 4775
+AR Path="/5F10CB4F" Ref="R?"  Part="1" 
+AR Path="/5E5EBC79/5F10CB4F" Ref="R211"  Part="1" 
+F 0 "R211" H 5925 4800 50  0000 C CNN
+F 1 "1.5K" H 5925 4725 50  0000 C CNN
+F 2 "Resistor_SMD:R_0805_2012Metric_Pad1.15x1.40mm_HandSolder" V 5680 4775 50  0001 C CNN
+F 3 "https://www.mouser.at/datasheet/2/418/NG_DS_9-1773463-9_A-1358566.pdf" H 5750 4775 50  0001 C CNN
+F 4 "CRGP0805F1K0" H 5750 4775 50  0001 C CNN "MPN"
+	1    5750 4775
+	-1   0    0    1   
+$EndComp
+$Comp
+L Device:R R?
+U 1 1 5F10CFCE
+P 6175 4550
+AR Path="/5F10CFCE" Ref="R?"  Part="1" 
+AR Path="/5E5EBC79/5F10CFCE" Ref="R210"  Part="1" 
+F 0 "R210" V 5968 4550 50  0000 C CNN
+F 1 "10K" V 6059 4550 50  0000 C CNN
+F 2 "Resistor_SMD:R_0805_2012Metric_Pad1.15x1.40mm_HandSolder" V 6105 4550 50  0001 C CNN
+F 3 "https://www.mouser.at/datasheet/2/418/NG_DS_9-1773463-9_A-1358566.pdf" H 6175 4550 50  0001 C CNN
+F 4 "CRGP0805F1K0" H 6175 4550 50  0001 C CNN "MPN"
+	1    6175 4550
+	0    -1   -1   0   
+$EndComp
+Text Notes 5875 5150 0    50   ~ 0
+Generate bias voltage\nof 50mV\n\n(actually 48.7 mV)
+Text Notes 5100 5600 0    50   ~ 0
+This loses half the DAC range to biasing,\nbut it ought to bring the inputs to the\nopamp above into a range where the\nopamp can work correctly.
+Wire Notes Line
+	6750 5650 5050 5650
+Wire Notes Line
+	5050 5650 5050 5225
+Wire Notes Line
+	5050 5225 5400 5225
+Wire Notes Line
+	5400 5225 5400 3875
+Text Notes 5050 5750 0    50   ~ 10
+POSSIBLE MODIFICATION
+Wire Notes Line
+	6750 3875 6750 5650
+Wire Notes Line
+	6750 3875 5400 3875
 $EndSCHEMATC
