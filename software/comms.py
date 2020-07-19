@@ -36,7 +36,7 @@ class TeensyLoad:
                         raise CommsError('firmware version mismatch')
                     self.stop()
                     return
-                raise FileNotFoundError
+            raise FileNotFoundError('cannot find Teensy Load USB device')
         except:
             self.usb = None
             raise

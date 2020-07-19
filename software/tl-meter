@@ -24,13 +24,16 @@ class Handler:
         self.voltage_set = builder.get_object("voltage-set")
         self.power_limit = builder.get_object("power-limit")
         self.status_bar = builder.get_object("status-bar")
+        self.go = builder.get_object("go")
         self.stop = builder.get_object("stop")
         self.comment_text = builder.get_object("comment")
-        self.sample_ms = 100
-        self.filename = os.path.expanduser(
-            datetime.now().strftime('~/tl-meter/%Y%m%d-%H%M%S.dat'))
-        os.makedirs(os.path.expanduser('~/tl-meter'), exist_ok=True)
-        self.logfp = open(self.filename, 'w', buffering=1)
+        self.add_comment = builder.get_object("add-comment")
+        self.sample_ms = 1000
+        self.running = False
+        self.smooth = None
+        self.current_smoother = []
+        self.voltage_smoother = []
+        self.logfp = None
         self.t0 = datetime.now().timestamp()
 
         try:
@@ -50,20 +53,69 @@ class Handler:
             GLib.idle_add(self.set_values, (t, vals),
                           priority=GLib.PRIORITY_DEFAULT)
 
+    def do_smooth(self, current, voltage):
+        if self.smooth is None:
+            return current, voltage
+        nadd = self.smooth - len(self.current_smoother)
+        if nadd < 1:
+            nadd = 1
+        self.current_smoother += nadd * [current]
+        if len(self.current_smoother) > self.smooth:
+            self.current_smoother = self.current_smoother[-self.smooth:]
+        current = sum(self.current_smoother) / self.smooth
+        self.voltage_smoother += nadd * [voltage]
+        if len(self.voltage_smoother) > self.smooth:
+            self.voltage_smoother = self.voltage_smoother[-self.smooth:]
+        voltage = sum(self.voltage_smoother) / self.smooth
+        return current, voltage
+
     def set_values(self, tvals):
         t, vals = tvals
         current, voltage = vals
+        if self.logfp is not None:
+            print('{} {} {}'.format(t, current, voltage), file=self.logfp)
+        current, voltage = self.do_smooth(current, voltage)
         self.current.set_text('{:6.3f} A'.format(current))
         self.voltage.set_text('{:6.3f} V'.format(voltage))
-        print('{} {} {}'.format(t, current, voltage), file=self.logfp)
 
     def onDestroy(self, *args):
         Gtk.main_quit()
 
     def onStopPressed(self, button):
         self.teensy_load.stop()
-        self.current.set_text('00.000 A')
-        self.voltage.set_text('00.000 V')
+        self.stop.set_sensitive(False)
+        self.go.set_sensitive(True)
+        self.running = False
+
+    def onGoPressed(self, button):
+        self.setValues()
+        self.stop.set_sensitive(True)
+        self.go.set_sensitive(False)
+        self.running = True
+
+    def saveToFileChanged(self, button):
+        if button.get_active():
+            self.filename = os.path.expanduser(
+                datetime.now().strftime('~/tl-meter/%Y%m%d-%H%M%S.dat'))
+            os.makedirs(os.path.expanduser('~/tl-meter'), exist_ok=True)
+            self.logfp = open(self.filename, 'w', buffering=1)
+            self.add_comment.set_sensitive(True)
+        else:
+            self.filename = None
+            self.logfp = None
+            self.add_comment.set_sensitive(False)
+
+    def onSampleChanged(self, combo):
+        self.sample_ms = int(combo.get_active_id())
+        if self.running:
+            self.setValues()
+
+    def onSmoothChanged(self, combo):
+        smooth_str = combo.get_active_id()
+        if smooth_str == 'off':
+            self.smooth = None
+        else:
+            self.smooth = int(smooth_str)
 
     def onOpenPreferences(self, button):
         print("Open preferences...")
@@ -75,11 +127,11 @@ class Handler:
         self.comment_text.set_text('')
 
     def onCurrentChanged(self, button):
-        if self.setPowerLimit():
+        if self.setPowerLimit() and self.running:
             self.setValues()
 
     def onVoltageChanged(self, button):
-        if self.setPowerLimit():
+        if self.setPowerLimit() and self.running:
             self.setValues()
 
     def setValues(self):
@@ -105,12 +157,12 @@ class Handler:
 
 builder = Gtk.Builder()
 builder.add_from_file("tl-meter.glade")
-builder.connect_signals(Handler(builder))
+handler= Handler(builder)
+builder.connect_signals(handler)
 
 win = builder.get_object("top-level")
 win.show_all()
 
-power_limit = builder.get_object("power-limit")
-power_limit.hide()
+handler.power_limit.hide()
 
 Gtk.main()
