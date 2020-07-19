@@ -79,6 +79,7 @@ class Handler:
         self.voltage.set_text('{:6.3f} V'.format(voltage))
 
     def onDestroy(self, *args):
+        self.teensy_load.stop()
         Gtk.main_quit()
 
     def onStopPressed(self, button):
