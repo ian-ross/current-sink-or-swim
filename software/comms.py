@@ -17,9 +17,13 @@ CURRENT_ADC_SCALE = ADC_MAX / CURRENT_MAX
 VOLTAGE_ADC_SCALE = ADC_MAX / VOLTAGE_MAX
 
 
-class CommsError(Exception):
+class TeensyLoadError(Exception):
     def __init__(self, message):
         self.message = message
+
+class CommsError(TeensyLoadError):
+    def __init__(self, message):
+        super(CommsError, self).__init__(message)
 
 class TeensyLoad:
     def __init__(self):
@@ -49,8 +53,12 @@ class TeensyLoad:
         dac_current = math.floor(current * CURRENT_DAC_SCALE)
         dac_voltage = math.floor(voltage * VOLTAGE_DAC_SCALE)
         msg = '{} {} {}'.format(sample_ms, dac_current, dac_voltage)
-        if self.command(msg) != '+ok':
-            raise CommsError('unexpected response')
+        resp = self.command(msg)
+        if resp == '+ok':
+            return
+        if resp.startswith('+error '):
+            raise TeensyLoadError(resp.split(' ')[1])
+        raise CommsError('unexpected response: "' + resp + '"')
 
     def stop(self):
         if self.command('0 0 0') != '+ok':

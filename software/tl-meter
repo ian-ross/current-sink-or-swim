@@ -138,7 +138,15 @@ class Handler:
     def setValues(self):
         current = self.current_set.get_value()
         voltage = self.voltage_set.get_value()
-        self.teensy_load.start(self.sample_ms, current, voltage)
+        try:
+            self.teensy_load.start(self.sample_ms, current, voltage)
+            self.clearStatus()
+        except comms.TeensyLoadError as exc:
+            if exc.message == 'power-limit-exceeded':
+                self.triggerPowerLimit(current)
+            else:
+                self.setStatus(exc.message)
+            self.onStopPressed(None)
 
     def setPowerLimit(self):
         current = self.current_set.get_value()
@@ -146,15 +154,25 @@ class Handler:
         power = current * voltage
         if power <= POWER_LIMIT:
             return True
+        self.triggerPowerLimit(current)
+        return False
+
+    def triggerPowerLimit(self, current):
         self.power_limit.show()
-        GObject.timeout_add(2000, self.hidePowerLimit)
+        GLib.timeout_add(2000, self.hidePowerLimit)
         voltage_limit = math.floor(POWER_LIMIT / current * 100) / 100
         self.voltage_set.set_value(voltage_limit)
-        return False
 
     def hidePowerLimit(self):
         self.power_limit.hide()
         return False
+
+    def setStatus(self, message):
+        self.status_bar.remove_all(0)
+        self.status_bar.push(0, 'Error: ' + message)
+
+    def clearStatus(self):
+        self.status_bar.remove_all(0)
 
 builder = Gtk.Builder()
 builder.add_from_file("tl-meter.glade")
