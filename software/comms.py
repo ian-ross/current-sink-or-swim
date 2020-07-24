@@ -47,7 +47,7 @@ class TeensyLoad:
         if voltage < 0 or voltage > VOLTAGE_MAX:
             raise CommsError('voltage out of range')
         dac_current = math.floor(current * CURRENT_DAC_SCALE)
-        dac_voltage = math.floor(voltage * CURRENT_DAC_SCALE)
+        dac_voltage = math.floor(voltage * VOLTAGE_DAC_SCALE)
         msg = '{} {} {}'.format(sample_ms, dac_current, dac_voltage)
         if self.command(msg) != '+ok':
             raise CommsError('unexpected response')
