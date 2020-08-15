@@ -30,15 +30,15 @@ $EndComp
 $Comp
 L Device:R R?
 U 1 1 5E5F12B6
-P 7025 4100
+P 7025 4400
 AR Path="/5E5F12B6" Ref="R?"  Part="1" 
 AR Path="/5E5EBC79/5E5F12B6" Ref="R205"  Part="1" 
-F 0 "R205" H 7095 4146 50  0000 L CNN
-F 1 "10m, 3W" H 7095 4055 50  0000 L CNN
-F 2 "teensy-load:Sense_Resistor" V 6955 4100 50  0001 C CNN
-F 3 "https://www.mouser.at/datasheet/2/611/rmc-series-1074317.pdf" H 7025 4100 50  0001 C CNN
-F 4 "RMCJ2U00R01FS" H 7025 4100 50  0001 C CNN "MPN"
-	1    7025 4100
+F 0 "R205" H 7095 4446 50  0000 L CNN
+F 1 "10m, 3W" H 7095 4355 50  0000 L CNN
+F 2 "teensy-load:Sense_Resistor" V 6955 4400 50  0001 C CNN
+F 3 "https://www.mouser.at/datasheet/2/611/rmc-series-1074317.pdf" H 7025 4400 50  0001 C CNN
+F 4 "RMCJ2U00R01FS" H 7025 4400 50  0001 C CNN "MPN"
+	1    7025 4400
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -84,9 +84,9 @@ F 4 "CRGP0805F1K0" H 6450 3450 50  0001 C CNN "MPN"
 $EndComp
 Text HLabel 8650 2700 2    50   Input ~ 0
 IN+
-Text HLabel 8650 5275 2    50   Input ~ 0
+Text HLabel 8650 5875 2    50   Input ~ 0
 IN-
-Text Notes 6775 6200 0    50   ~ 0
+Text Notes 4050 7275 0    50   ~ 0
 0.01Ω sense resistor => 1A current / 10mV of programming voltage\n\nSo max. programming voltage of 0.1V =>max. current 10A\n\nBTS141 max. I_D = 25 A\n\nI = 10A, R = 0.01Ω => Power = I^2 R = 1W\nUse 3W sense resistor to give margin
 Text HLabel 3225 2475 0    50   Input ~ 0
 I2C_SCL
@@ -170,16 +170,9 @@ Wire Wire Line
 Wire Wire Line
 	5100 2625 4625 2625
 Wire Wire Line
-	7025 5275 8650 5275
-Wire Wire Line
-	7025 3650 7025 3750
+	7025 5875 8650 5875
 Wire Wire Line
 	5625 3550 5500 3550
-Wire Wire Line
-	5500 3550 5500 3750
-Wire Wire Line
-	5500 3750 7025 3750
-Connection ~ 7025 3750
 Text Notes 4825 2600 0    50   ~ 0
 0-3.3V
 Text Notes 5200 3325 0    50   ~ 0
@@ -192,7 +185,7 @@ Wire Wire Line
 	5100 3900 5100 4000
 Text Notes 2950 2975 0    50   ~ 0
 Other DAC6571\nhas A0 high
-Text HLabel 8650 4000 2    50   Output ~ 0
+Text HLabel 8650 4300 2    50   Output ~ 0
 I_SENSE
 $Comp
 L Device:C C201
@@ -206,61 +199,12 @@ F 4 "885012207098" H 2050 2500 50  0001 C CNN "MPN"
 	1    2050 2500
 	1    0    0    -1  
 $EndComp
-$Comp
-L power:+3.3V #PWR0201
-U 1 1 5E619260
-P 2050 2125
-F 0 "#PWR0201" H 2050 1975 50  0001 C CNN
-F 1 "+3.3V" H 2065 2298 50  0000 C CNN
-F 2 "" H 2050 2125 50  0001 C CNN
-F 3 "" H 2050 2125 50  0001 C CNN
-	1    2050 2125
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:GND #PWR?
-U 1 1 5E619775
-P 2050 2900
-AR Path="/5E619775" Ref="#PWR?"  Part="1" 
-AR Path="/5E5EBC79/5E619775" Ref="#PWR0202"  Part="1" 
-F 0 "#PWR0202" H 2050 2650 50  0001 C CNN
-F 1 "GND" H 2055 2727 50  0000 C CNN
-F 2 "" H 2050 2900 50  0001 C CNN
-F 3 "" H 2050 2900 50  0001 C CNN
-	1    2050 2900
-	1    0    0    -1  
-$EndComp
+Connection ~ 7025 4200
 Wire Wire Line
-	2050 2900 2050 2650
+	7025 4200 7025 4250
 Wire Wire Line
-	2050 2350 2050 2125
-Wire Wire Line
-	7025 3750 7025 3825
-Connection ~ 7025 3900
-Wire Wire Line
-	7025 3900 7025 3950
-$Comp
-L teensy-load:TLV4333 U102
-U 2 1 5E62FB6E
-P 8000 4000
-F 0 "U102" H 8000 4365 50  0000 C CNN
-F 1 "TLV4333" H 8000 4274 50  0000 C CNN
-F 2 "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm" H 8000 4025 50  0001 C CNN
-F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Ftlv4333" H 8000 4025 50  0001 C CNN
-F 4 "TLV4333IDR" H 8000 4000 50  0001 C CNN "MPN"
-	2    8000 4000
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	7025 3900 7700 3900
-Wire Wire Line
-	8300 4000 8375 4000
-Wire Wire Line
-	7600 4100 7700 4100
-Connection ~ 8375 4000
-Wire Wire Line
-	8375 4000 8650 4000
-Text Notes 7075 3900 0    50   ~ 10
+	7525 4400 7625 4400
+Text Notes 7075 4200 0    50   ~ 10
 A
 Text Notes 1825 4975 0    50   ~ 10
 THERMAL DESIGN
@@ -278,66 +222,33 @@ Wire Notes Line
 	1800 6100 4975 6100
 Text Notes 1825 6050 0    50   ~ 10
 Firmware should limit joint programmed current and maximum voltage\nsettings to give P <= 20W.
-$Comp
-L teensy-load:TLV4333 U102
-U 1 1 5E62F02B
-P 5925 3450
-F 0 "U102" H 5925 3815 50  0000 C CNN
-F 1 "TLV4333" H 5925 3724 50  0000 C CNN
-F 2 "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm" H 5925 3475 50  0001 C CNN
-F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Ftlv4333" H 5925 3475 50  0001 C CNN
-F 4 "TLV4333IDR" H 5925 3450 50  0001 C CNN "MPN"
-	1    5925 3450
-	1    0    0    -1  
-$EndComp
-$Comp
-L Connector:Conn_01x01_Male J201
-U 1 1 5E696BFD
-P 7700 3175
-F 0 "J201" H 7808 3356 50  0000 C CNN
-F 1 "Conn_01x01_Male" H 7808 3265 50  0000 C CNN
-F 2 "teensy-load:HeatSink_RA_T2X_64E" H 7700 3175 50  0001 C CNN
-F 3 "https://www.ohmite.com/assets/docs/sink_f_r.pdf" H 7700 3175 50  0001 C CNN
-F 4 "RA-T2X-64E" H 7700 3175 50  0001 C CNN "MPN"
-	1    7700 3175
-	1    0    0    -1  
-$EndComp
-NoConn ~ 7900 3175
-Text Notes 7625 3300 0    50   ~ 0
-Heat sink
-Text Notes 7825 5000 0    50   ~ 0
+Text Notes 7750 5675 0    50   ~ 0
 Amplification of 33 here gives full range\nADC input for sense voltage range of 0-0.1V.
 $Comp
 L Device:R R208
 U 1 1 5E7C1E35
-P 8075 4400
-F 0 "R208" V 8175 4400 50  0000 C CNN
-F 1 "220K" V 8275 4400 50  0000 C CNN
-F 2 "Resistor_SMD:R_0805_2012Metric_Pad1.15x1.40mm_HandSolder" V 8005 4400 50  0001 C CNN
-F 3 "https://www.mouser.at/datasheet/2/418/NG_DS_9-1773463-9_A-1358566.pdf" H 8075 4400 50  0001 C CNN
-F 4 "CRGP0805F220K" H 8075 4400 50  0001 C CNN "MPN"
-	1    8075 4400
+P 8000 4975
+F 0 "R208" V 8100 4975 50  0000 C CNN
+F 1 "220K" V 8200 4975 50  0000 C CNN
+F 2 "Resistor_SMD:R_0805_2012Metric_Pad1.15x1.40mm_HandSolder" V 7930 4975 50  0001 C CNN
+F 3 "https://www.mouser.at/datasheet/2/418/NG_DS_9-1773463-9_A-1358566.pdf" H 8000 4975 50  0001 C CNN
+F 4 "CRGP0805F220K" H 8000 4975 50  0001 C CNN "MPN"
+	1    8000 4975
 	0    1    1    0   
 $EndComp
-Wire Wire Line
-	7600 4100 7600 4400
-Wire Wire Line
-	8375 4000 8375 4400
 $Comp
 L power:GND #PWR?
 U 1 1 5E7C4D35
-P 7600 4950
+P 7525 5625
 AR Path="/5E7C4D35" Ref="#PWR?"  Part="1" 
 AR Path="/5E5EBC79/5E7C4D35" Ref="#PWR0205"  Part="1" 
-F 0 "#PWR0205" H 7600 4700 50  0001 C CNN
-F 1 "GND" H 7605 4777 50  0000 C CNN
-F 2 "" H 7600 4950 50  0001 C CNN
-F 3 "" H 7600 4950 50  0001 C CNN
-	1    7600 4950
+F 0 "#PWR0205" H 7525 5375 50  0001 C CNN
+F 1 "GND" H 7530 5452 50  0000 C CNN
+F 2 "" H 7525 5625 50  0001 C CNN
+F 3 "" H 7525 5625 50  0001 C CNN
+	1    7525 5625
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	7025 4250 7025 5275
 $Comp
 L Device:R R?
 U 1 1 5E7D5DFF
@@ -379,160 +290,341 @@ Wire Wire Line
 $Comp
 L Device:R R?
 U 1 1 5E7EBF3C
-P 7675 4675
+P 7600 5350
 AR Path="/5E7EBF3C" Ref="R?"  Part="1" 
 AR Path="/5E5EBC79/5E7EBF3C" Ref="R207"  Part="1" 
-F 0 "R207" H 7745 4721 50  0000 L CNN
-F 1 "22K" H 7745 4630 50  0000 L CNN
-F 2 "Resistor_SMD:R_0805_2012Metric_Pad1.15x1.40mm_HandSolder" V 7605 4675 50  0001 C CNN
-F 3 "https://www.mouser.at/datasheet/2/418/NG_DS_9-1773463-9_A-1358566.pdf" H 7675 4675 50  0001 C CNN
-F 4 "CRGP0805F22K" H 7675 4675 50  0001 C CNN "MPN"
-	1    7675 4675
+F 0 "R207" H 7670 5396 50  0000 L CNN
+F 1 "22K" H 7670 5305 50  0000 L CNN
+F 2 "Resistor_SMD:R_0805_2012Metric_Pad1.15x1.40mm_HandSolder" V 7530 5350 50  0001 C CNN
+F 3 "https://www.mouser.at/datasheet/2/418/NG_DS_9-1773463-9_A-1358566.pdf" H 7600 5350 50  0001 C CNN
+F 4 "CRGP0805F22K" H 7600 5350 50  0001 C CNN "MPN"
+	1    7600 5350
 	1    0    0    -1  
 $EndComp
 $Comp
 L Device:R R?
 U 1 1 5E7EBF43
-P 7525 4675
+P 7450 5350
 AR Path="/5E7EBF43" Ref="R?"  Part="1" 
 AR Path="/5E5EBC79/5E7EBF43" Ref="R206"  Part="1" 
-F 0 "R206" H 7275 4725 50  0000 L CNN
-F 1 "10K" H 7275 4625 50  0000 L CNN
-F 2 "Resistor_SMD:R_0805_2012Metric_Pad1.15x1.40mm_HandSolder" V 7455 4675 50  0001 C CNN
-F 3 "https://www.mouser.at/datasheet/2/418/NG_DS_9-1773463-9_A-1358566.pdf" H 7525 4675 50  0001 C CNN
-F 4 "CRGP0805F1K0" H 7525 4675 50  0001 C CNN "MPN"
-	1    7525 4675
+F 0 "R206" H 7200 5400 50  0000 L CNN
+F 1 "10K" H 7200 5300 50  0000 L CNN
+F 2 "Resistor_SMD:R_0805_2012Metric_Pad1.15x1.40mm_HandSolder" V 7380 5350 50  0001 C CNN
+F 3 "https://www.mouser.at/datasheet/2/418/NG_DS_9-1773463-9_A-1358566.pdf" H 7450 5350 50  0001 C CNN
+F 4 "CRGP0805F1K0" H 7450 5350 50  0001 C CNN "MPN"
+	1    7450 5350
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	7675 4500 7600 4500
+	7600 5175 7525 5175
 Wire Wire Line
-	7600 4500 7525 4500
-Connection ~ 7600 4500
+	7525 5175 7450 5175
+Connection ~ 7525 5175
 Wire Wire Line
-	7525 4850 7600 4850
-Connection ~ 7600 4850
+	7450 5525 7525 5525
+Connection ~ 7525 5525
 Wire Wire Line
-	7600 4850 7675 4850
+	7525 5525 7600 5525
 Wire Wire Line
-	7525 4850 7525 4825
+	7450 5525 7450 5500
 Wire Wire Line
-	7675 4850 7675 4825
+	7600 5525 7600 5500
 Wire Wire Line
-	7600 4850 7600 4950
+	7525 5525 7525 5625
 Wire Wire Line
-	7600 4400 7600 4500
+	7450 5175 7450 5200
 Wire Wire Line
-	7525 4500 7525 4525
+	7600 5175 7600 5200
 Wire Wire Line
-	7675 4500 7675 4525
-Connection ~ 7600 4400
-Wire Wire Line
-	7600 4400 7925 4400
-Wire Wire Line
-	8225 4400 8375 4400
+	7525 4975 7850 4975
 $Comp
 L power:GND #PWR?
 U 1 1 5F10D516
-P 5750 5025
+P 5750 5500
 AR Path="/5F10D516" Ref="#PWR?"  Part="1" 
 AR Path="/5E5EBC79/5F10D516" Ref="#PWR02"  Part="1" 
-F 0 "#PWR02" H 5750 4775 50  0001 C CNN
-F 1 "GND" H 5755 4852 50  0000 C CNN
-F 2 "" H 5750 5025 50  0001 C CNN
-F 3 "" H 5750 5025 50  0001 C CNN
-	1    5750 5025
+F 0 "#PWR02" H 5750 5250 50  0001 C CNN
+F 1 "GND" H 5755 5327 50  0000 C CNN
+F 2 "" H 5750 5500 50  0001 C CNN
+F 3 "" H 5750 5500 50  0001 C CNN
+	1    5750 5500
 	1    0    0    -1  
 $EndComp
 $Comp
 L power:+3.3V #PWR01
 U 1 1 5F10DB53
-P 5750 4100
-F 0 "#PWR01" H 5750 3950 50  0001 C CNN
-F 1 "+3.3V" H 5765 4273 50  0000 C CNN
-F 2 "" H 5750 4100 50  0001 C CNN
-F 3 "" H 5750 4100 50  0001 C CNN
-	1    5750 4100
+P 5750 4575
+F 0 "#PWR01" H 5750 4425 50  0001 C CNN
+F 1 "+3.3V" H 5765 4748 50  0000 C CNN
+F 2 "" H 5750 4575 50  0001 C CNN
+F 3 "" H 5750 4575 50  0001 C CNN
+	1    5750 4575
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	5750 4100 5750 4200
+	5750 4575 5750 4675
 Wire Wire Line
-	5750 4500 5750 4550
+	5750 4975 5750 5025
 Wire Wire Line
-	5750 4925 5750 5025
+	5750 5400 5750 5500
 Wire Wire Line
-	6025 4550 5750 4550
-Connection ~ 5750 4550
+	6025 5025 5750 5025
+Connection ~ 5750 5025
 Wire Wire Line
-	5750 4550 5750 4625
+	5750 5025 5750 5100
 Wire Wire Line
-	6325 4550 6525 4550
+	6325 5025 6525 5025
 Wire Wire Line
-	6525 4550 6525 3825
-Wire Wire Line
-	6525 3825 7025 3825
-Connection ~ 7025 3825
-Wire Wire Line
-	7025 3825 7025 3900
+	6525 5025 6525 4300
 $Comp
 L Device:R R?
 U 1 1 5F10C69E
-P 5750 4350
+P 5750 4825
 AR Path="/5F10C69E" Ref="R?"  Part="1" 
-AR Path="/5E5EBC79/5F10C69E" Ref="R209"  Part="1" 
-F 0 "R209" H 5925 4375 50  0000 C CNN
-F 1 "100K" H 5925 4300 50  0000 C CNN
-F 2 "Resistor_SMD:R_0805_2012Metric_Pad1.15x1.40mm_HandSolder" V 5680 4350 50  0001 C CNN
-F 3 "https://www.mouser.at/datasheet/2/418/NG_DS_9-1773463-9_A-1358566.pdf" H 5750 4350 50  0001 C CNN
-F 4 "CRGP0805F1K0" H 5750 4350 50  0001 C CNN "MPN"
-	1    5750 4350
+AR Path="/5E5EBC79/5F10C69E" Ref="#R209"  Part="1" 
+F 0 "#R209" H 5925 4850 50  0000 C CNN
+F 1 "100K" H 5925 4775 50  0000 C CNN
+F 2 "Resistor_SMD:R_0805_2012Metric_Pad1.15x1.40mm_HandSolder" V 5680 4825 50  0001 C CNN
+F 3 "https://www.mouser.at/datasheet/2/418/NG_DS_9-1773463-9_A-1358566.pdf" H 5750 4825 50  0001 C CNN
+F 4 "CRGP0805F1K0" H 5750 4825 50  0001 C CNN "MPN"
+	1    5750 4825
 	-1   0    0    1   
 $EndComp
 $Comp
 L Device:R R?
 U 1 1 5F10CB4F
-P 5750 4775
+P 5750 5250
 AR Path="/5F10CB4F" Ref="R?"  Part="1" 
-AR Path="/5E5EBC79/5F10CB4F" Ref="R211"  Part="1" 
-F 0 "R211" H 5925 4800 50  0000 C CNN
-F 1 "1.5K" H 5925 4725 50  0000 C CNN
-F 2 "Resistor_SMD:R_0805_2012Metric_Pad1.15x1.40mm_HandSolder" V 5680 4775 50  0001 C CNN
-F 3 "https://www.mouser.at/datasheet/2/418/NG_DS_9-1773463-9_A-1358566.pdf" H 5750 4775 50  0001 C CNN
-F 4 "CRGP0805F1K0" H 5750 4775 50  0001 C CNN "MPN"
-	1    5750 4775
+AR Path="/5E5EBC79/5F10CB4F" Ref="#R211"  Part="1" 
+F 0 "#R211" H 5925 5275 50  0000 C CNN
+F 1 "1.5K" H 5925 5200 50  0000 C CNN
+F 2 "Resistor_SMD:R_0805_2012Metric_Pad1.15x1.40mm_HandSolder" V 5680 5250 50  0001 C CNN
+F 3 "https://www.mouser.at/datasheet/2/418/NG_DS_9-1773463-9_A-1358566.pdf" H 5750 5250 50  0001 C CNN
+F 4 "CRGP0805F1K0" H 5750 5250 50  0001 C CNN "MPN"
+	1    5750 5250
 	-1   0    0    1   
 $EndComp
 $Comp
 L Device:R R?
 U 1 1 5F10CFCE
-P 6175 4550
+P 6175 5025
 AR Path="/5F10CFCE" Ref="R?"  Part="1" 
-AR Path="/5E5EBC79/5F10CFCE" Ref="R210"  Part="1" 
-F 0 "R210" V 5968 4550 50  0000 C CNN
-F 1 "10K" V 6059 4550 50  0000 C CNN
-F 2 "Resistor_SMD:R_0805_2012Metric_Pad1.15x1.40mm_HandSolder" V 6105 4550 50  0001 C CNN
-F 3 "https://www.mouser.at/datasheet/2/418/NG_DS_9-1773463-9_A-1358566.pdf" H 6175 4550 50  0001 C CNN
-F 4 "CRGP0805F1K0" H 6175 4550 50  0001 C CNN "MPN"
-	1    6175 4550
+AR Path="/5E5EBC79/5F10CFCE" Ref="#R210"  Part="1" 
+F 0 "#R210" V 5968 5025 50  0000 C CNN
+F 1 "10K" V 6059 5025 50  0000 C CNN
+F 2 "Resistor_SMD:R_0805_2012Metric_Pad1.15x1.40mm_HandSolder" V 6105 5025 50  0001 C CNN
+F 3 "https://www.mouser.at/datasheet/2/418/NG_DS_9-1773463-9_A-1358566.pdf" H 6175 5025 50  0001 C CNN
+F 4 "CRGP0805F1K0" H 6175 5025 50  0001 C CNN "MPN"
+	1    6175 5025
 	0    -1   -1   0   
 $EndComp
-Text Notes 5875 5150 0    50   ~ 0
+Text Notes 5875 5625 0    50   ~ 0
 Generate bias voltage\nof 50mV\n\n(actually 48.7 mV)
-Text Notes 5100 5600 0    50   ~ 0
+Text Notes 5100 6075 0    50   ~ 0
 This loses half the DAC range to biasing,\nbut it ought to bring the inputs to the\nopamp above into a range where the\nopamp can work correctly.
 Wire Notes Line
-	6750 5650 5050 5650
+	6750 6125 5050 6125
 Wire Notes Line
-	5050 5650 5050 5225
+	5050 6125 5050 5700
 Wire Notes Line
-	5050 5225 5400 5225
+	5050 5700 5400 5700
 Wire Notes Line
-	5400 5225 5400 3875
-Text Notes 5050 5750 0    50   ~ 10
+	5400 5700 5400 4350
+Text Notes 5050 6225 0    50   ~ 10
 POSSIBLE MODIFICATION
 Wire Notes Line
-	6750 3875 6750 5650
+	6750 4350 6750 6125
 Wire Notes Line
-	6750 3875 5400 3875
+	6750 4350 5400 4350
+$Comp
+L Mechanical:Heatsink HS201
+U 1 1 5F35BA55
+P 7500 3450
+F 0 "HS201" V 7453 3630 50  0000 L CNN
+F 1 "Heatsink" V 7544 3630 50  0000 L CNN
+F 2 "teensy-load:HeatSink_RA_T2X_64E" H 7512 3450 50  0001 C CNN
+F 3 "https://www.ohmite.com/assets/docs/sink_f_r.pdf" H 7512 3450 50  0001 C CNN
+F 4 "RA-T2X-64E" H 7500 3450 50  0001 C CNN "MPN"
+	1    7500 3450
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	5500 4050 7025 4050
+$Comp
+L teensy-load:TLV333IDBVR U202
+U 1 1 5F367B88
+P 5925 3450
+F 0 "U202" H 5900 3175 50  0000 L CNN
+F 1 "TLV333IDBVR" H 5900 3275 50  0000 L CNN
+F 2 "Package_TO_SOT_SMD:SOT-23-5" H 5825 3250 50  0001 L CNN
+F 3 "https://www.ti.com/lit/ds/symlink/tlv333.pdf" H 5925 3650 50  0001 C CNN
+	1    5925 3450
+	1    0    0    -1  
+$EndComp
+Connection ~ 7025 4050
+Wire Wire Line
+	7025 4050 7025 4200
+Wire Wire Line
+	7025 3650 7025 4050
+Wire Wire Line
+	5500 3550 5500 4050
+$Comp
+L power:GND #PWR?
+U 1 1 5F37E32F
+P 5825 3750
+AR Path="/5F37E32F" Ref="#PWR?"  Part="1" 
+AR Path="/5E5EBC79/5F37E32F" Ref="#PWR0109"  Part="1" 
+F 0 "#PWR0109" H 5825 3500 50  0001 C CNN
+F 1 "GND" H 5830 3577 50  0000 C CNN
+F 2 "" H 5825 3750 50  0001 C CNN
+F 3 "" H 5825 3750 50  0001 C CNN
+	1    5825 3750
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+3.3V #PWR0110
+U 1 1 5F37EAF0
+P 5825 3150
+F 0 "#PWR0110" H 5825 3000 50  0001 C CNN
+F 1 "+3.3V" H 5840 3323 50  0000 C CNN
+F 2 "" H 5825 3150 50  0001 C CNN
+F 3 "" H 5825 3150 50  0001 C CNN
+	1    5825 3150
+	1    0    0    -1  
+$EndComp
+$Comp
+L teensy-load:TLV333IDBVR U203
+U 1 1 5F381930
+P 7925 4300
+F 0 "U203" H 7900 4025 50  0000 L CNN
+F 1 "TLV333IDBVR" H 7900 4125 50  0000 L CNN
+F 2 "Package_TO_SOT_SMD:SOT-23-5" H 7825 4100 50  0001 L CNN
+F 3 "https://www.ti.com/lit/ds/symlink/tlv333.pdf" H 7925 4500 50  0001 C CNN
+	1    7925 4300
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5F381936
+P 7825 4600
+AR Path="/5F381936" Ref="#PWR?"  Part="1" 
+AR Path="/5E5EBC79/5F381936" Ref="#PWR0111"  Part="1" 
+F 0 "#PWR0111" H 7825 4350 50  0001 C CNN
+F 1 "GND" H 7830 4427 50  0000 C CNN
+F 2 "" H 7825 4600 50  0001 C CNN
+F 3 "" H 7825 4600 50  0001 C CNN
+	1    7825 4600
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+3.3V #PWR0112
+U 1 1 5F38193C
+P 7825 4000
+F 0 "#PWR0112" H 7825 3850 50  0001 C CNN
+F 1 "+3.3V" H 7840 4173 50  0000 C CNN
+F 2 "" H 7825 4000 50  0001 C CNN
+F 3 "" H 7825 4000 50  0001 C CNN
+	1    7825 4000
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7025 4550 7025 5875
+Wire Wire Line
+	8225 4300 8500 4300
+Wire Wire Line
+	7525 4400 7525 4975
+Connection ~ 7525 4975
+Wire Wire Line
+	7525 4975 7525 5175
+Wire Wire Line
+	8150 4975 8500 4975
+Wire Wire Line
+	8500 4300 8500 4975
+Connection ~ 8500 4300
+Wire Wire Line
+	7025 4200 7625 4200
+Wire Wire Line
+	8500 4300 8650 4300
+$Comp
+L power:GND #PWR?
+U 1 1 5F3B3440
+P 1125 2800
+AR Path="/5F3B3440" Ref="#PWR?"  Part="1" 
+AR Path="/5E5EBC79/5F3B3440" Ref="#PWR0202"  Part="1" 
+F 0 "#PWR0202" H 1125 2550 50  0001 C CNN
+F 1 "GND" H 1130 2627 50  0000 C CNN
+F 2 "" H 1125 2800 50  0001 C CNN
+F 3 "" H 1125 2800 50  0001 C CNN
+	1    1125 2800
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C?
+U 1 1 5F3B3447
+P 1125 2500
+AR Path="/5F3B3447" Ref="C?"  Part="1" 
+AR Path="/5E5EBC79/5F3B3447" Ref="C202"  Part="1" 
+F 0 "C202" H 1240 2546 50  0000 L CNN
+F 1 "0.1U" H 1240 2455 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0805_2012Metric_Pad1.15x1.40mm_HandSolder" H 1163 2350 50  0001 C CNN
+F 3 "https://www.mouser.at/datasheet/2/445/885012207098-1727748.pdf" H 1125 2500 50  0001 C CNN
+F 4 "885012207098" H 1125 2500 50  0001 C CNN "MPN"
+	1    1125 2500
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+3.3V #PWR?
+U 1 1 5F3B344D
+P 1125 2200
+AR Path="/5F3B344D" Ref="#PWR?"  Part="1" 
+AR Path="/5E5EBC79/5F3B344D" Ref="#PWR0201"  Part="1" 
+F 0 "#PWR0201" H 1125 2050 50  0001 C CNN
+F 1 "+3.3V" H 1140 2373 50  0000 C CNN
+F 2 "" H 1125 2200 50  0001 C CNN
+F 3 "" H 1125 2200 50  0001 C CNN
+	1    1125 2200
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1125 2200 1125 2275
+Wire Wire Line
+	1125 2650 1125 2750
+$Comp
+L Device:C C?
+U 1 1 5F3B3457
+P 1575 2500
+AR Path="/5F3B3457" Ref="C?"  Part="1" 
+AR Path="/5E5EBC79/5F3B3457" Ref="C203"  Part="1" 
+F 0 "C203" H 1690 2546 50  0000 L CNN
+F 1 "0.1U" H 1690 2455 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0805_2012Metric_Pad1.15x1.40mm_HandSolder" H 1613 2350 50  0001 C CNN
+F 3 "https://www.mouser.at/datasheet/2/445/885012207098-1727748.pdf" H 1575 2500 50  0001 C CNN
+F 4 "885012207098" H 1575 2500 50  0001 C CNN "MPN"
+	1    1575 2500
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1125 2275 1575 2275
+Connection ~ 1125 2275
+Wire Wire Line
+	1125 2275 1125 2350
+Connection ~ 1125 2750
+Wire Wire Line
+	1125 2750 1125 2800
+Wire Wire Line
+	1575 2275 1575 2350
+Wire Wire Line
+	1575 2650 1575 2750
+Wire Wire Line
+	1575 2750 1125 2750
+Wire Wire Line
+	1575 2750 2050 2750
+Wire Wire Line
+	2050 2750 2050 2650
+Wire Wire Line
+	2050 2275 1575 2275
+Wire Wire Line
+	2050 2350 2050 2275
+Connection ~ 1575 2750
+Connection ~ 1575 2275
 $EndSCHEMATC

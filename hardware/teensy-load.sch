@@ -14,17 +14,6 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 $Comp
-L power:GND #PWR0108
-U 1 1 5E58A69A
-P 9325 5400
-F 0 "#PWR0108" H 9325 5150 50  0001 C CNN
-F 1 "GND" H 9330 5227 50  0000 C CNN
-F 2 "" H 9325 5400 50  0001 C CNN
-F 3 "" H 9325 5400 50  0001 C CNN
-	1    9325 5400
-	1    0    0    -1  
-$EndComp
-$Comp
 L Connector_Generic:Conn_01x02 J101
 U 1 1 5E5A20A7
 P 8425 3550
@@ -36,26 +25,6 @@ F 4 "TB010-508-02BE" H 8425 3550 50  0001 C CNN "MPN"
 	1    8425 3550
 	1    0    0    -1  
 $EndComp
-$Comp
-L Device:C C101
-U 1 1 5E5D75E8
-P 8975 5100
-F 0 "C101" H 9090 5146 50  0000 L CNN
-F 1 "0.1U" H 9090 5055 50  0000 L CNN
-F 2 "Capacitor_SMD:C_0805_2012Metric_Pad1.15x1.40mm_HandSolder" H 9013 4950 50  0001 C CNN
-F 3 "https://www.mouser.at/datasheet/2/445/885012207098-1727748.pdf" H 8975 5100 50  0001 C CNN
-F 4 "885012207098" H 8975 5100 50  0001 C CNN "MPN"
-	1    8975 5100
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	9325 4975 9450 4975
-Wire Wire Line
-	9450 5175 9325 5175
-Wire Wire Line
-	8975 4950 8975 4850
-Wire Wire Line
-	8975 5250 8975 5325
 Text Notes 1700 2425 0    50   ~ 0
 IDEAS\n\n - Power from Teensy\n - Expose current and voltage for measurement by Teensy ADCs\n - Program current and maximum voltage from Teensy using I2C DACs\n\nUSE CASES\n\n - Single measurements\n - Scan programming voltage, record test item voltage and current to give V/I curve\n - Fix programming voltage, record current and test item voltage over time\n\nLIMITATIONS\n\n - Current 0 - 10A (full range of current setting DAC)\n - Max. voltage 0 - 20V (full range of max. voltage setting DAC)\n - Max. power 0 - 20W (limit by firmware)
 Text Notes 2000 5075 0    50   ~ 0
@@ -76,17 +45,6 @@ Wire Wire Line
 	8225 3550 7975 3550
 Wire Wire Line
 	8225 3650 8075 3650
-$Comp
-L power:+3.3V #PWR0107
-U 1 1 5E5F5427
-P 9325 4800
-F 0 "#PWR0107" H 9325 4650 50  0001 C CNN
-F 1 "+3.3V" H 9340 4973 50  0000 C CNN
-F 2 "" H 9325 4800 50  0001 C CNN
-F 3 "" H 9325 4800 50  0001 C CNN
-	1    9325 4800
-	1    0    0    -1  
-$EndComp
 $Comp
 L teensy-load:TEENSY_4.0 U101
 U 1 1 5E5F881B
@@ -207,8 +165,6 @@ Wire Wire Line
 Wire Wire Line
 	5850 4675 5850 4100
 Connection ~ 5850 4100
-Text Notes 9050 4475 0    50   ~ 0
-Op amp power
 Wire Wire Line
 	7550 4575 7975 4575
 Wire Wire Line
@@ -267,36 +223,10 @@ F5 "IN-" I R 7550 4675 50
 F6 "FET_GATE" I R 7550 4825 50 
 F7 "V_SENSE" O L 6600 4825 50 
 $EndSheet
-Wire Wire Line
-	9325 4800 9325 4850
-Wire Wire Line
-	9325 5175 9325 5325
-Wire Wire Line
-	8975 4850 9325 4850
-Connection ~ 9325 4850
-Wire Wire Line
-	9325 4850 9325 4975
-Wire Wire Line
-	8975 5325 9325 5325
-Connection ~ 9325 5325
-Wire Wire Line
-	9325 5325 9325 5400
 Text Notes 8375 3450 0    50   ~ 0
 Device under test\nconnects here
 Text Notes 4100 5275 0    50   ~ 0
 Input impedance of Teensy ADC inputs is\nca. 7kΩ, giving an input current of about\n0.5mA on each of the two inputs used.\n(Signals going to these have op amp\ndrivers to buffer them.)
-$Comp
-L teensy-load:TLV4333 U102
-U 5 1 5E6376FF
-P 9650 5075
-F 0 "U102" H 9778 5129 50  0000 L CNN
-F 1 "TLV4333" H 9778 5038 50  0000 L CNN
-F 2 "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm" H 9650 5100 50  0001 C CNN
-F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Ftlv4333" H 9650 5100 50  0001 C CNN
-F 4 "TLV4333IDR" H 9650 5075 50  0001 C CNN "MPN"
-	5    9650 5075
-	1    0    0    -1  
-$EndComp
 Text Notes 1450 6200 0    50   ~ 10
 POWER
 Text Notes 1450 6600 0    50   ~ 0
