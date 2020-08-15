@@ -3,18 +3,7 @@ import serial
 import serial.tools.list_ports
 from threading import Thread
 from queue import Queue
-
-CURRENT_MAX = 10.0
-VOLTAGE_MAX = 20.0
-
-DAC_MAX = 1023
-ADC_MAX = 4095
-
-CURRENT_DAC_SCALE = DAC_MAX / CURRENT_MAX
-VOLTAGE_DAC_SCALE = DAC_MAX / VOLTAGE_MAX
-
-CURRENT_ADC_SCALE = ADC_MAX / CURRENT_MAX
-VOLTAGE_ADC_SCALE = ADC_MAX / VOLTAGE_MAX
+from cal import Calibration
 
 
 class TeensyLoadError(Exception):
@@ -29,6 +18,7 @@ class TeensyLoad:
     def __init__(self):
         self.cmd_queue = Queue()
         self.data_queues = []
+        self.cal = Calibration()
         try:
             for p in serial.tools.list_ports.comports():
                 if p.vid == 0x16C0 and p.pid == 0x0483:
@@ -46,12 +36,15 @@ class TeensyLoad:
             raise
 
     def start(self, sample_ms, current, voltage):
-        if current < 0 or current > CURRENT_MAX:
+        if current < 0 or current > self.cal.CURRENT_MAX:
             raise CommsError('current out of range')
-        if voltage < 0 or voltage > VOLTAGE_MAX:
+        if voltage < 0 or voltage > self.cal.VOLTAGE_MAX:
             raise CommsError('voltage out of range')
-        dac_current = math.floor(current * CURRENT_DAC_SCALE)
-        dac_voltage = math.floor(voltage * VOLTAGE_DAC_SCALE)
+        dac_current = math.floor(current * self.cal.current_dac_scale)
+        dac_voltage = math.floor(voltage * self.cal.voltage_dac_scale)
+        self.start_raw(sample_ms, dac_current, dac_voltage)
+
+    def start_raw(self, sample_ms, dac_current, dac_voltage):
         msg = '{} {} {}'.format(sample_ms, dac_current, dac_voltage)
         resp = self.command(msg)
         if resp == '+ok':
@@ -85,7 +78,7 @@ class TeensyLoad:
                 current_str, voltage_str = line.split()
                 adc_current = int(current_str)
                 adc_voltage = int(voltage_str)
-                vals = (adc_current / CURRENT_ADC_SCALE,
-                        adc_voltage / VOLTAGE_ADC_SCALE)
+                vals = (adc_current / self.cal.current_adc_scale,
+                        adc_voltage / self.cal.voltage_adc_scale)
                 for q in self.data_queues:
                     q.put(vals)

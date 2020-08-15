@@ -1,0 +1,141 @@
+#!/usr/bin/env python3
+import sys
+
+from cal import Calibration
+import cli
+
+SAMPLE_MS = 25
+SAMPLES = 100
+
+try:
+   cli = cli.CLI()
+except Exception as exc:
+   print('Oops:', exc, file=sys.stderr)
+   sys.exit(1)
+
+if not cli.teensy_load.cal.calibrated:
+   print('WARNING: DEVICE NOT CALIBRATED!', file=sys.stderr)
+
+print('''
+
+FOR STEPS 1 AND 2, DISCONNECT ANY DUT FROM THE TEENSY LOAD!
+
+
+STEP 1: CURRENT SETTING DAC
+
+When prompted, measure the voltage at the non-inverting input of
+the current setting opamp. This is pin 3 of the TLV4333 U102. The
+values should lie in the range 0 - 0.1 V.
+
+''')
+dummy = input('--> PRESS ENTER WHEN READY')
+print('')
+
+print('Setting current DAC to {}/1023 ({:2.4} mA)'.
+      format(Calibration.DAC_MAX, Calibration.CURRENT_MAX))
+cli.start_raw(SAMPLE_MS, Calibration.DAC_MAX, 0)
+current_dac_measurement = float(input('  Measurement (V): '))
+cli.stop()
+NOMINAL_CURRENT_DAC_VALUE = 0.1
+current_dac_scale = (Calibration.CURRENT_DAC_SCALE *
+                     NOMINAL_CURRENT_DAC_VALUE / current_dac_measurement)
+
+
+print('''
+
+
+STEP 2: VOLTAGE LIMIT SETTING DAC
+
+When prompted, measure the voltage at the non-inverting input of the
+voltage limiting opamp. This is pin 10 of the TLV4333 U102. The values
+should lie in the range 0 - 2 V.
+
+''')
+dummy = input('--> PRESS ENTER WHEN READY')
+print('')
+
+print('Setting voltage limiting DAC to {}/1023 ({:2.4} V)'.
+      format(Calibration.DAC_MAX, Calibration.VOLTAGE_MAX))
+cli.start_raw(SAMPLE_MS, 0, Calibration.DAC_MAX)
+voltage_dac_measurement = float(input('  Measurement (V): '))
+cli.stop()
+NOMINAL_VOLTAGE_DAC_VALUE = 2.0
+voltage_dac_scale = (Calibration.VOLTAGE_DAC_SCALE *
+                     NOMINAL_VOLTAGE_DAC_VALUE / voltage_dac_measurement)
+
+
+
+print('''
+
+
+STEP 3: CURRENT AND VOLTAGE READINGS')
+
+Connect a multimeter in current measuring mode inside the DUT current
+loop.
+
+Connect a 5V power supply capable of delivering more than 1A to the
+DUT connections.
+
+When prompted, measure the current through the DUT and the voltage
+across the DUT.
+
+''')
+dummy = input('--> PRESS ENTER WHEN READY')
+print('')
+
+CURRENT = 250.0 / 1000.0
+measurements = []
+print('Setting voltage limit to 6V, current demand to {} mA.'.format(CURRENT))
+current_dac = CURRENT * current_dac_scale
+voltage_dac = 6.0 * voltage_dac_scale
+cli.start_raw(SAMPLE_MS, current_dac, voltage_dac)
+print('  Collecting data...')
+vals = cli.collect(SAMPLES)
+current_reading = float(input('  Current measurement (A): '))
+voltage_reading = float(input('  Voltage measurement (V): '))
+cli.stop()
+adc_current_mean = 0
+adc_voltage_mean = 0
+for v in vals:
+   (adc_current, adc_voltage) = v
+   # Correct values back to raw ADC counts.
+   adc_current *= cli.teensy_load.cal.current_adc_scale
+   adc_current_mean += adc_current
+   adc_voltage *= cli.teensy_load.cal.voltage_adc_scale
+   adc_voltage_mean += adc_voltage
+adc_current_mean /= SAMPLES
+adc_voltage_mean /= SAMPLES
+
+# Now we want:
+#
+# adc_current_mean * current_adc_scale = current_reading
+# adc_voltage_mean * voltage_adc_scale = voltage_reading
+
+print('adc_current_mean = {}'.format(adc_current_mean))
+print('adc_voltage_mean = {}'.format(adc_voltage_mean))
+
+current_adc_scale = adc_current_mean / current_reading
+voltage_adc_scale = adc_voltage_mean / voltage_reading
+
+cal = Calibration()
+cal.current_dac_scale = current_dac_scale
+cal.voltage_dac_scale = voltage_dac_scale
+cal.current_adc_scale = current_adc_scale
+cal.voltage_adc_scale = voltage_adc_scale
+cal.save()
+
+print('''
+
+CALIBRATION DATA SAVED
+
+  CURRENT DAC SCALE: {} (DEFAULT {})
+  VOLTAGE DAC SCALE: {} (DEFAULT {})
+
+  CURRENT ADC SCALE: {} (DEFAULT {})
+  VOLTAGE ADC SCALE: {} (DEFAULT {})
+'''.format(
+   current_dac_scale, Calibration.CURRENT_DAC_SCALE,
+   voltage_dac_scale, Calibration.VOLTAGE_DAC_SCALE,
+   current_adc_scale, Calibration.CURRENT_ADC_SCALE,
+   voltage_adc_scale, Calibration.VOLTAGE_ADC_SCALE
+))

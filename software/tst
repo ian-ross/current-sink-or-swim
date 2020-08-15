@@ -1,0 +1,28 @@
+#!/usr/bin/env python3
+
+import atexit
+import time
+import click
+
+class Tmp:
+    def __init__(self):
+        self.abc = 123
+        print('Tmp created...')
+        #atexit.register(self.cleanup)
+
+    def cleanup(self):
+        print('Tmp destroyed...')
+
+    def __del__(self):
+        self.cleanup()
+
+@click.command()
+@click.option('--time', 'run_time', default=5, help='Time to run (s)')
+def run(run_time):
+    tmp = Tmp()
+    for step in range(run_time):
+        print('Step {}...'.format(step + 1))
+        time.sleep(1)
+
+if __name__ == '__main__':
+    run()

@@ -9,11 +9,10 @@ from threading import Thread
 import gi
 
 import comms
+from cal import Calibration
 
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, GObject, GLib
-
-POWER_LIMIT = 20.0
 
 class Handler:
     def __init__(self, builder):
@@ -152,7 +151,7 @@ class Handler:
         current = self.current_set.get_value()
         voltage = self.voltage_set.get_value()
         power = current * voltage
-        if power <= POWER_LIMIT:
+        if power <= Calibration.POWER_LIMIT:
             return True
         self.triggerPowerLimit(current)
         return False
@@ -160,7 +159,7 @@ class Handler:
     def triggerPowerLimit(self, current):
         self.power_limit.show()
         GLib.timeout_add(2000, self.hidePowerLimit)
-        voltage_limit = math.floor(POWER_LIMIT / current * 100) / 100
+        voltage_limit = math.floor(Calibration.POWER_LIMIT / current * 100) / 100
         self.voltage_set.set_value(voltage_limit)
 
     def hidePowerLimit(self):
@@ -183,5 +182,7 @@ win = builder.get_object("top-level")
 win.show_all()
 
 handler.power_limit.hide()
+if not handler.teensy_load.cal.calibrated:
+    print('WARNING: DEVICE NOT CALIBRATED!', file=sys.stderr)
 
 Gtk.main()

@@ -1,0 +1,122 @@
+#!/usr/bin/env python3
+import math
+import re
+import sys
+
+import click
+
+from cal import Calibration
+import cli
+
+
+try:
+    cli = cli.CLI()
+except Exception as exc:
+   print('Oops:', exc, file=sys.stderr)
+   sys.exit(1)
+
+if not cli.teensy_load.cal.calibrated:
+   print('***********************************', file=sys.stderr)
+   print('* WARNING: DEVICE NOT CALIBRATED! *', file=sys.stderr)
+   print('***********************************', file=sys.stderr)
+   print('', file=sys.stderr)
+
+
+@click.command()
+@click.option('--output', required=True,
+              help='Output file prefix (files are prefix.raw and prefix.dat)')
+@click.option('--append', is_flag=True, help='Continue run, appending to output file')
+@click.option('--current', required=True,
+              help='Current demand values')
+@click.option('--voltage-min', required=True, type=click.FLOAT,
+              help='Minimum permitted supply voltage')
+@click.option('--voltage-max', type=click.FLOAT,
+              help='Maximum permitted supply voltage')
+@click.option('--sample-interval', default=50.0, type=click.FLOAT,
+              help='Sample interval (ms)')
+@click.option('--sample-count', default=50, type=click.INT,
+              help='Sample count per current demand value')
+def run(output, append, current,
+        voltage_min, voltage_max, sample_interval, sample_count):
+    current_values = parse_current(current)
+    if voltage_max is None:
+        voltage_max = Calibration.POWER_LIMIT / (max(current_values) / 1000.0)
+        if voltage_max > Calibration.VOLTAGE_MAX:
+            voltage_max = Calibration.VOLTAGE_MAX
+
+    mode = 'a' if append else 'w'
+    with open(output + '.raw', mode) as rawfp:
+        with open(output + '.dat', mode) as datfp:
+            for c in current_values:
+                print('Current demand: {} mA...'.format(c))
+                samples = sample(c, sample_interval, sample_count, voltage_max)
+                write_data(rawfp, datfp, c, samples)
+                if not check_continue(samples, c, voltage_min):
+                    break
+
+
+CURRENT_VAL_RE = re.compile('^[0-9]+$')
+CURRENT_SPEC_RE = re.compile('^([0-9]+)-([0-9]+)/([0-9]+)$')
+
+def parse_current(current_str):
+    currents = []
+    for current_spec in current_str.split(','):
+        if CURRENT_VAL_RE.match(current_spec):
+            currents.append(int(current_spec))
+            continue
+        spec = CURRENT_SPEC_RE.match(current_spec)
+        if not spec:
+            print('Unrecognised current spec: {}'.format(current_spec),
+                  file=sys.stderr)
+            sys.exit(1)
+        c = int(spec.group(1))
+        current_max = int(spec.group(2))
+        current_step = int(spec.group(3))
+        while c <= current_max:
+            currents.append(c)
+            c += current_step
+    if currents != sorted(currents) or len(set(currents)) != len(currents):
+        print('Current sequence must be unique monotonic increasing', file=sys.stderr)
+        sys.exit(1)
+    return currents
+
+def sample(current_demand, sample_interval, sample_count, voltage_max):
+    cli.start(sample_interval, current_demand / 1000.0, voltage_max)
+    samples = cli.collect(sample_count)
+    cs = [s[0] for s in samples]
+    cli.stop()
+    return samples
+
+def check_continue(samples, current_demand, voltage_min):
+    if any([s[1] <= voltage_min for s in samples]):
+        print('  MINIMUM VOLTAGE HIT: STOPPING', file=sys.stderr)
+        return False
+    return True
+
+def write_data(rawfp, datfp, current_demand, samples):
+    n = len(samples)
+    c_sum = 0.0
+    c2_sum = 0.0
+    v_sum = 0.0
+    v2_sum = 0.0
+    for i in range(n):
+        c, v = samples[i]
+        c_sum += c
+        c2_sum += c * c
+        v_sum += v
+        v2_sum += v * v
+        print('{} {} {} {}'.format(current_demand, i+1, c, v), file=rawfp)
+    rawfp.flush()
+    c_mean = c_sum / n
+    v_mean = v_sum / n
+    c2_mean = c2_sum / n
+    v2_mean = v2_sum / n
+    c_sd = math.sqrt(c2_mean - c_mean * c_mean)
+    v_sd = math.sqrt(v2_mean - v_mean * v_mean)
+    print('{} {} {} {} {}'.format(current_demand,
+                                  c_mean * 1000.0, v_mean,
+                                  c_sd * 1000.0, v_sd), file=datfp)
+    datfp.flush()
+
+if __name__ == '__main__':
+    run()

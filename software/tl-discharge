@@ -1,0 +1,63 @@
+#!/usr/bin/env python3
+import math
+import re
+import sys
+import time
+
+import click
+
+from cal import Calibration
+import cli
+
+
+try:
+    cli = cli.CLI()
+except Exception as exc:
+   print('Oops:', exc, file=sys.stderr)
+   sys.exit(1)
+
+if not cli.teensy_load.cal.calibrated:
+   print('***********************************', file=sys.stderr)
+   print('* WARNING: DEVICE NOT CALIBRATED! *', file=sys.stderr)
+   print('***********************************', file=sys.stderr)
+   print('', file=sys.stderr)
+
+
+@click.command()
+@click.option('--output', required=True,
+              help='Output file name')
+@click.option('--current', required=True, type=click.INT,
+              help='Current demand (mA)')
+@click.option('--voltage-min', required=True, type=click.FLOAT,
+              help='Minimum permitted supply voltage')
+@click.option('--voltage-max', type=click.FLOAT,
+              help='Maximum permitted supply voltage')
+@click.option('--sample-interval', default=1, type=click.INT,
+              help='Sample interval (s)')
+def run(output, current, voltage_min, voltage_max, sample_interval):
+    if voltage_max is None:
+        voltage_max = Calibration.POWER_LIMIT / (current / 1000.0)
+        if voltage_max > Calibration.VOLTAGE_MAX:
+            voltage_max = Calibration.VOLTAGE_MAX
+
+    print('Current demand: {} mA...'.format(current))
+    cli.start(sample_interval, current / 1000.0, voltage_max)
+    with open(output, 'w') as fp:
+        sample = cli.collect(1)[0]
+        write_data(fp, current, sample)
+        if sample[1] <= voltage_min:
+            print('  MINIMUM VOLTAGE HIT: STOPPING', file=sys.stderr)
+            break
+    cli.stop()
+
+
+def write_data(fp, current, sample):
+    now = time.time()
+    ms = int(math.fmod(now, 1) * 1000)
+    ts = time.strftime('%Y-%m-%dT%H:%M:%S.{:03}'.format(ms), time.localtime(now))
+    print('{} {} {} {}'.format(ts, sample[0], sample[1]), file=sys.stderr)
+    print('{} {} {} {}'.format(ts, sample[0], sample[1]), file=fp)
+    fp.flush()
+
+if __name__ == '__main__':
+    run()
